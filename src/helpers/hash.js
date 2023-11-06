@@ -18,8 +18,16 @@ function comparePassword(hashedPassword, salt, plainPassword) {
     const hashedRawPassword = crypto.pbkdf2Sync(plainPassword, salt, 100, 64, `sha512`).toString(`hex`);
     return hashedPassword===hashedRawPassword;
 }
+function hashPasswordWithSaltFromDB(password, salt) {
+    const hashedPw = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+    return {
+        salt,
+        hashedPw
+    }
+}
 
 module.exports = {
     hashPassword,
     comparePassword,
+    hashPasswordWithSaltFromDB
 };
