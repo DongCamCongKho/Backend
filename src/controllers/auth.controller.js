@@ -9,10 +9,48 @@ expireTime = 60 * 60 * 24 * 7;
 const options = { expiresIn: expireTime };
 const publicKey = fs.readFileSync('public_key.pem', 'utf8');
 const privateKey = fs.readFileSync('private_key.pem', 'utf8');
-const secrecKey = 'dongcam'
+const fileUpload = require('express-fileupload');
+const updatedContentDisposition = 'inline';
+var AWS = require('aws-sdk');
+loginRouter.use(fileUpload());
+loginRouter.post('/upload', async (req, res) => {
+
+    AWS.config.update({
+        accessKeyId: process.env.ACCESS_KEY_ID,
+        secretAccessKey: process.env.SECRET_ACCESS_KEY,
+        region: 'eu-north-1'
+    });
+    const s3 = new AWS.S3();
+    const fileData = req.files.data; // Truy cập dữ liệu tệp từ yêu cầu
+
+    // Đặt Content-Disposition thành 'inline' trước khi tải lên
+    fileData.ContentDisposition = 'attachment';
+    req.files.data.mimetype = 'application/pdf';
+    console.log(fileData);
+    const fileContent = Buffer.from(req.files.data.data, 'binary');
+    const params = {
+        Bucket: 'finalsgroup',
+        Key: req.files.data.name,
+        Body: fileContent,
+        ACL: 'public-read',
+        MetadataDirective: 'REPLACE',
+        ContentDisposition: updatedContentDisposition,
+        ContentType:    req.files.data.mimetype
+    };
+    s3.upload(params, function (err, data) {
+        if (err) {
+            throw err;
+        }
+        res.send({
+            "responseCode": 200,
+            "responseMessage": "success",
+            "response": data
+        })
+    });
+});
 
 loginRouter.post('/register', async (req, res, next) => {
-    const { username, password, name, birthday, gender, email } = req.body; 
+    const { username, password, name, birthday, gender, email } = req.body;
     console.log(req.body);
     try {
         const isUserExist = await getOne({
@@ -30,8 +68,8 @@ loginRouter.post('/register', async (req, res, next) => {
             const result = await create({
                 db,
                 query: `INSERT INTO user (username, hashedPassword, salt, name, birthday, gender, email)  
-                        VALUES (?, ?, ?, ?, ?, ?, ?)`, 
-                params: [username, hashedPw, salt, name, birthday, gender, email] 
+                        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                params: [username, hashedPw, salt, name, birthday, gender, email]
             });
             if (result) {
                 res.status(200).json({ message: 'Registration successful' });
@@ -73,19 +111,22 @@ loginRouter.post('/login', async (req, res) => {
     }
 });
 
-function validateToken (res, req, next) {
+
+
+function validateToken(res, req, next) {
     const authorization = req.headers.authorization;
     const token = authorization.substring(7);
     try {
         const isTokenValid = jwt.verify(token, publicKey, { algorithm: 'RS256' });
-        if(isTokenValid) {
-        res.locals.userToken = isTokenValid;
-        next();
+        if (isTokenValid) {
+            res.locals.userToken = isTokenValid;
+            next();
         }
     }
     catch (err) {
         res.status(400).json({ message: err.message });
     }
 }
+
 
 module.exports = loginRouter;
