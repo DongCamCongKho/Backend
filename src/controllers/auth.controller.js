@@ -49,8 +49,8 @@ loginRouter.post('/upload', async (req, res) => {
     });
 });
 
-loginRouter.post('/register', async (req, res, next) => {
-    const { username, password, name, birthday, gender, email } = req.body;
+authRouter.post('/register', async (req, res, next) => {
+    const { username, password, role, name, birthday, gender, email } = req.body;
     console.log(req.body);
     try {
         const isUserExist = await getOne({
@@ -67,9 +67,9 @@ loginRouter.post('/register', async (req, res, next) => {
 
             const result = await create({
                 db,
-                query: `INSERT INTO user (username, hashedPassword, salt, name, birthday, gender, email)  
-                        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                params: [username, hashedPw, salt, name, birthday, gender, email]
+                query: `INSERT INTO user (username, hashedPassword, role ,salt, name, birthday, gender, email)  
+                        VALUES (?, ?, ?, ?, ?, ?, ?,?)`,
+                params: [username, hashedPw, role, salt, name, birthday, gender, email]
             });
             if (result) {
                 res.status(200).json({ message: 'Registration successful' });
@@ -83,7 +83,8 @@ loginRouter.post('/register', async (req, res, next) => {
     }
 });
 
-loginRouter.post('/login', async (req, res) => {
+
+authRouter.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
         const isUserValid = await getOne({
@@ -129,4 +130,4 @@ function validateToken(res, req, next) {
 }
 
 
-module.exports = loginRouter;
+module.exports = authRouter;
