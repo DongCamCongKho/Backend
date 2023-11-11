@@ -128,6 +128,10 @@ function validateToken(res, req, next) {
         res.status(400).json({ message: err.message });
     }
 }
-
+function getToken (req) {
+    const authorization = req.headers.authorization;
+    const token = authorization.substring(7);
+    return token;
+}
 
 module.exports = authRouter;

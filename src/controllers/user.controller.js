@@ -1,5 +1,6 @@
 const db = require("../database/connection")
 const {hashPassword,comparePassword} = require("../helpers/hash")
+const {getUserNameFromToken, getRoleFromToken} = require("../services/token")
 const createUser = (req,res)=>{
     const {username,name,email,password,gender,role,profilePicture} = req.body
     const hashedPassword = hashPassword(password);
@@ -9,7 +10,7 @@ const createUser = (req,res)=>{
     const user = {
         username,name,email,salt,hashedPassword : hashedRawPassword,gender,role,profilePicture,createdAt
     }                                           
-            
+    
     db.query("INSERT INTO user SET ?",user,(err,result)=>{
         if(err) throw err;
         res.status(200).send("Create user successfully")

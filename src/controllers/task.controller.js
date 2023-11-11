@@ -1,13 +1,15 @@
 const db = require("../database/connection")
-
+const {getUserNameFromToken, getRoleFromToken} = require("../services/token")
 
 const createTask = (req, res) => {
     const { title, description, deadline } = req.body
     const status = "doing";
     const createdAt = new Date();
     //postedBy get from token
+    //username get from token
+    postedBy = getUserNameFromToken(req);
     const task = {
-        title, description, status, deadline, createdAt
+        title, description, status, deadline, createdAt,postedBy
     }
     db.query("INSERT INTO task SET ?", task, (err, result) => {
         if (err) throw err;
