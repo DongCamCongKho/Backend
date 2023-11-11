@@ -100,7 +100,7 @@ authRouter.post('/login', async (req, res) => {
             const hashedPwFromDB = hashPasswordWithSaltFromDB(password, salt).hashedPw;
             console.log(hashedPw);
             if (hashedPwFromDB.localeCompare(hashedPw) === 0) {
-                const token = jwt.sign({ username: isUserValid.username }, privateKey, { algorithm: 'RS256' });
+                const token = jwt.sign({ username: isUserValid.username, role : isUserValid.role }, privateKey, { algorithm: 'RS256' });
                 res.status(200).json({ token });
             } else {
                 res.status(400).json({ message: 'Username or password is incorrect' });
@@ -128,10 +128,6 @@ function validateToken(res, req, next) {
         res.status(400).json({ message: err.message });
     }
 }
-function getToken (req) {
-    const authorization = req.headers.authorization;
-    const token = authorization.substring(7);
-    return token;
-}
+
 
 module.exports = authRouter;

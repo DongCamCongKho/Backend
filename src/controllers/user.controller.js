@@ -1,5 +1,7 @@
 const db = require("../database/connection")
-const {hashPassword,comparePassword} = require("../helpers/hash")
+const {hashPassword,
+    comparePassword,
+    hashPasswordWithSaltFromDB} = require("../helpers/hash")
 const {getUserNameFromToken, getRoleFromToken} = require("../services/token")
 const createUser = (req,res)=>{
     const {username,name,email,password,gender,role,profilePicture} = req.body
