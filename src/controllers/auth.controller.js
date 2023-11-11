@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const express = require('express');
-const authRouter = express.Router();
+const loginRouter = express.Router();
 const { getOne, create } = require('../database/query');
 const { hashPassword, hashPasswordWithSaltFromDB } = require('../helpers/hash');
 const db = require('../database/connection');
@@ -12,8 +12,8 @@ const privateKey = fs.readFileSync('private_key.pem', 'utf8');
 const fileUpload = require('express-fileupload');
 const updatedContentDisposition = 'inline';
 var AWS = require('aws-sdk');
-authRouter.use(fileUpload());
-authRouter.post('/upload', async (req, res) => {
+loginRouter.use(fileUpload());
+loginRouter.post('/upload', async (req, res) => {
 
     AWS.config.update({
         accessKeyId: process.env.ACCESS_KEY_ID,
@@ -21,7 +21,9 @@ authRouter.post('/upload', async (req, res) => {
         region: 'eu-north-1'
     });
     const s3 = new AWS.S3();
-    const fileData = req.files.data; 
+    const fileData = req.files.data; // Truy cập dữ liệu tệp từ yêu cầu
+
+    // Đặt Content-Disposition thành 'inline' trước khi tải lên
     fileData.ContentDisposition = 'attachment';
     req.files.data.mimetype = 'application/pdf';
     console.log(fileData);
@@ -47,7 +49,7 @@ authRouter.post('/upload', async (req, res) => {
     });
 });
 
-authRouter.post('/register', async (req, res, next) => {
+loginRouter.post('/register', async (req, res, next) => {
     const { username, password, name, birthday, gender, email } = req.body;
     console.log(req.body);
     try {
@@ -81,7 +83,7 @@ authRouter.post('/register', async (req, res, next) => {
     }
 });
 
-authRouter.post('/login', async (req, res) => {
+loginRouter.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
         const isUserValid = await getOne({
@@ -127,4 +129,4 @@ function validateToken(res, req, next) {
 }
 
 
-module.exports = authRouter;
+module.exports = loginRouter;
