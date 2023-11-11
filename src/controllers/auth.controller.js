@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const express = require('express');
-const loginRouter = express.Router();
+const authRouter = express.Router();
 const { getOne, create } = require('../database/query');
 const { hashPassword, hashPasswordWithSaltFromDB } = require('../helpers/hash');
 const db = require('../database/connection');
@@ -12,8 +12,8 @@ const privateKey = fs.readFileSync('private_key.pem', 'utf8');
 const fileUpload = require('express-fileupload');
 const updatedContentDisposition = 'inline';
 var AWS = require('aws-sdk');
-loginRouter.use(fileUpload());
-loginRouter.post('/upload', async (req, res) => {
+authRouter.use(fileUpload());
+authRouter.post('/upload', async (req, res) => {
 
     AWS.config.update({
         accessKeyId: process.env.ACCESS_KEY_ID,
