@@ -77,7 +77,7 @@ const taskInit = `
 
             deadline DATETIME,
 
-            postedBy INT references user(ID)
+            postedBy VARCHAR(50) references user(username)
         );
             
 

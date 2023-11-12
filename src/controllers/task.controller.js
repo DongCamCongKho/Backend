@@ -13,6 +13,7 @@ const createTask = (req, res) => {
     }
     db.query("INSERT INTO task SET ?", task, (err, result) => {
         if (err) throw err;
+        task.ID  = result.insertId;
         res.status(200).json(task);
     })
 }
@@ -33,6 +34,13 @@ const getTaskByID = (req, res) => {
 }
 const updateTask = (req, res) => {
     // update casi gif? 
+    const {status} = req.body;
+    const updateAt = new Date();
+    const {id} = req.params;
+    db.query("UPDATE task SET status = ?, updateAt = ? WHERE id = ?",[status,updateAt,id],(err,result)=>{
+        if(err) throw err;
+        res.status(200).send("update task successfully")
+    })
     res.status(200).send("updateTask")
 }
 const deleteTask = (req, res) => {
@@ -78,6 +86,9 @@ const getCommentByID = (req, res) => {
 
 const updateComment = (req, res) => {
     // update casi gif? 
+    // const { content } = req.body
+    // const updateAt = new Date();
+
     res.status(200).send("updateComment")
 }
 const deleteComment = (req, res) => {
