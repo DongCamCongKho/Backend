@@ -18,11 +18,25 @@ const createTask = (req, res) => {
     })
 }
 
-const getTask = (req, res) => {
-    db.query("SELECT * FROM task", (err, result) => {
-        if (err) throw err;
-        res.status(200).send(result)
+const getTask = async (req, res) => {
+    try {
+
+    const result  = await new Promise((resolve,reject) =>{ 
+                db.query("SELECT task.*,user.name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username ", (err, results) => {
+                if (err) return reject(err)
+                resolve(results);
+                
+            })
     })
+    
+    res.status(200).json(result);
+    }
+    catch(err)
+    {
+        throw err;
+    }
+    
+
 }
 const getTaskByID = (req, res) => {
     const { id } = req.params;
@@ -113,6 +127,8 @@ const createAttachment = (req,res)=>{
         res.status(200).json(attachment);
     })
 }
+
+
 const getAttachment = (req,res)=>{
     db.query("SELECT * FROM attachment",(err,result)=>{
         if(err) throw err;
