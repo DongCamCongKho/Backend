@@ -82,7 +82,8 @@ const deleteTask = (req, res) => {
     })
 }
 
-const createComment = (req, res) => {
+const createComment = async (req, res) => {
+    try {
     const { content } = req.body
     const createdAt = new Date();
     //const postedBy
@@ -92,10 +93,28 @@ const createComment = (req, res) => {
     const comment = {
         content, createdAt, taskID,updatedAt : createdAt,postedBy
     }
-    db.query("INSERT INTO comment SET ?", comment, (err, result) => {
-        if (err) throw err;
-        res.status(200).json(comment);
+    const commentInf = await new Promise((resolve,reject)=>{ 
+         db.query("INSERT INTO comment SET ?", comment, (err, result) => 
+        {
+        if (err) reject(err);
+        resolve(result);
+        })
+        })
+    const commentResult = await new Promise((resolve,reject)=>{
+        db.query("SELECT comment.* , CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture, user.name,user.role FROM comment INNER JOIN user ON comment.postedBy = user.username WHERE comment.ID =?",[commentInf.insertId],(err,result)=>{
+        if (err) reject(err);
+        resolve(result);       
+        })
     })
+    res.status(200).json(commentResult);
+
+    
+
+    }
+    catch(err)
+    {
+        throw err;
+    }
 
 }
 
