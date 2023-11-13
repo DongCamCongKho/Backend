@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+import { registerValidate } from '../middlewares/user.middleware';
+import { validateToken } from '../services/token';
 const fs = require('fs');
 const express = require('express');
 const authRouter = express.Router();
@@ -13,7 +15,7 @@ const fileUpload = require('express-fileupload');
 const updatedContentDisposition = 'inline';
 var AWS = require('aws-sdk');
 authRouter.use(fileUpload());
-authRouter.post('/upload', async (req, res) => {
+authRouter.post('/upload',validateTokens, async (req, res) => {
 
     AWS.config.update({
         accessKeyId: process.env.ACCESS_KEY_ID,
@@ -49,7 +51,7 @@ authRouter.post('/upload', async (req, res) => {
     });
 });
 
-authRouter.post('/register', async (req, res, next) => {
+authRouter.post('/register',registerValidate,async (req, res, next) => {
     const { username, password, role, name, birthday, gender, email } = req.body;
     console.log(req.body);
     try {

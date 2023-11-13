@@ -35,4 +35,5 @@ function registerValidate(req,res,next)
     
 }
 
+
 module.exports = {registerValidate};
