@@ -57,7 +57,7 @@ const getTask = async (req, res) => {
 }
 const getTaskByID = (req, res) => {
     const { id } = req.params;
-    db.query("SELECT * FROM task WHERE id = ?", id, (err, result) => {
+    db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username  WHERE task.id = ?", id, (err, result) => {
         if (err) throw err;
         res.status(200).send(result)
     })
