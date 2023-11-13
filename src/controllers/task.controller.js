@@ -167,7 +167,8 @@ const createAttachment = (req,res)=>{
 
 
 const getAttachment = (req,res)=>{
-    db.query("SELECT * FROM attachment",(err,result)=>{
+    const taskID = req.params.id;
+    db.query("SELECT * FROM attachment where taskID = ?",[taskID],(err,result)=>{
         if(err) throw err;
         res.status(200).send(result)
     })
