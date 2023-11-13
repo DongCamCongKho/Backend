@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-import { registerValidate } from '../middlewares/user.middleware';
-import { validateToken } from '../services/token';
+const { registerValidate } = require('../middlewares/user.middleware');
 const fs = require('fs');
 const express = require('express');
 const authRouter = express.Router();
 const { getOne, create } = require('../database/query');
+const validateToken = require('../middlewares/auth.middleware');
 const { hashPassword, hashPasswordWithSaltFromDB } = require('../helpers/hash');
 const db = require('../database/connection');
 expireTime = 60 * 60 * 24 * 7;
@@ -15,7 +15,7 @@ const fileUpload = require('express-fileupload');
 const updatedContentDisposition = 'inline';
 var AWS = require('aws-sdk');
 authRouter.use(fileUpload());
-authRouter.post('/upload',validateTokens, async (req, res) => {
+authRouter.post('/upload', validateToken, async (req, res) => {
 
     AWS.config.update({
         accessKeyId: process.env.ACCESS_KEY_ID,
