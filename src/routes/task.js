@@ -7,7 +7,6 @@ router.post('/',taskController.createTask);
 router.get('/myTask',taskController.getMyTask);
 router.get('/',taskController.getTask);
 router.get('/:id',taskController.getTaskByID);
-
 router.put('/:id',taskController.updateTask);
 router.delete('/:id',taskController.deleteTask);
 

@@ -100,7 +100,8 @@ const createComment = (req, res) => {
 }
 
 const getComment = (req, res) => {
-    db.query("SELECT comment.* , CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture, user.name,user.role FROM comment INNER JOIN user ON comment.postedBy = user.username ", (err, result) => {
+    taskID = req.params.id;
+    db.query("SELECT comment.* , CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture, user.name,user.role FROM comment INNER JOIN user ON comment.postedBy = user.username WHERE taskID =?",[taskID] ,(err, result) => {
         if (err) throw err;
         res.status(200).send(result)
     })
