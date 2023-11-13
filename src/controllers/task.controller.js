@@ -17,12 +17,29 @@ const createTask = (req, res) => {
         res.status(200).json(task);
     })
 }
+const getMyTask = async (req, res) => {
+
+    try{
+        const username = getUserNameFromToken(req);
+        const result = await new Promise((resolve,reject) =>{ 
+            db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username WHERE task.postedBy = ?", username, (err, results) => {
+            if (err) return reject(err)
+            resolve(results);
+            
+        })
+    })
+        res.status(200).json(result);
+
+    }
+    catch(err)
+    {}
+}
 
 const getTask = async (req, res) => {
     try {
 
     const result  = await new Promise((resolve,reject) =>{ 
-                db.query("SELECT task.*,user.name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username ", (err, results) => {
+                db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username ", (err, results) => {
                 if (err) return reject(err)
                 resolve(results);
                 
@@ -148,4 +165,4 @@ const getAttachmentByID = (req,res)=>{
 module.exports = {createTask, getTask, getTaskByID, updateTask,
                  deleteTask, createComment, getComment,
                 getCommentByID, updateComment, deleteComment,
-                createAttachment,getAttachment,getAttachmentByID}
+                createAttachment,getAttachment,getAttachmentByID,getMyTask}
