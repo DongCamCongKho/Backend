@@ -73,7 +73,7 @@ const createComment = (req, res) => {
    
     const taskID = req.params.id;
     const comment = {
-        content, createdAt, taskID,updateAt : createdAt
+        content, createdAt, taskID,updatedAt : createdAt
     }
     db.query("INSERT INTO comment SET ?", comment, (err, result) => {
         if (err) throw err;
