@@ -87,10 +87,10 @@ const createComment = (req, res) => {
     const createdAt = new Date();
     //const postedBy
     //postedBy get from token
-   
+    postedBy = getUserNameFromToken(req);
     const taskID = req.params.id;
     const comment = {
-        content, createdAt, taskID,updatedAt : createdAt
+        content, createdAt, taskID,updatedAt : createdAt,postedBy
     }
     db.query("INSERT INTO comment SET ?", comment, (err, result) => {
         if (err) throw err;
@@ -100,7 +100,7 @@ const createComment = (req, res) => {
 }
 
 const getComment = (req, res) => {
-    db.query("SELECT * FROM comment", (err, result) => {
+    db.query("SELECT comment.* , CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture, user.name,user.role FROM comment INNER JOIN user ON comment.postedBy = user.username ", (err, result) => {
         if (err) throw err;
         res.status(200).send(result)
     })

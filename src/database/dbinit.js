@@ -96,7 +96,7 @@ const comment = `
     
                 TaskID INT references task(ID),
     
-                postedBy INT references user(ID)
+                postedBy VARCHAR(50) references user(username)
     
             );
         `;
