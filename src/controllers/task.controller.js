@@ -206,6 +206,36 @@ const getTask = (req,res)=>{
     })
 
 }
+const createCommentAttachment = (req,res)=>{
+    const {name,path,type,size} = req.body;
+    const createdAt = new Date();
+    const commentID = req.params.commentID;
+    const attachment = {
+        name,path,type,size,createdAt,commentID
+    }
+    db.query("INSERT INTO commentAttachment SET ?",attachment,(err,result)=>{
+        if(err) throw err;
+        res.status(200).json(attachment);
+    })
+
+}
+const getCommentAttachment = (req,res)=>{
+    const commentID = req.params.commentID;
+    db.query("SELECT * FROM commentAttachment where commentID = ?",[commentID],(err,result)=>{
+        if(err) throw err;
+        res.status(200).send(result)
+    })
+
+}
+const getCommentAttachmentByID = (req,res)=>{
+    const {id} = req.params.attachmentID;
+    db.query("SELECT * FROM commentAttachment WHERE id = ?",id,(err,result)=>{
+        if(err) throw err;
+        res.status(200).send(result)
+    }
+    )
+}
+
 function  pagTask(page, pageSize) {
 
     return new Promise((resolve, reject) => {
@@ -239,4 +269,6 @@ function  pagTask(page, pageSize) {
 module.exports = {createTask, getTask, getTaskByID, updateTask,
                  deleteTask, createComment, getComment,
                 getCommentByID, updateComment, deleteComment,
-                createAttachment,getAttachment,getAttachmentByID,getMyTask,getStoreTask}
+                createAttachment,getAttachment,getAttachmentByID,getMyTask,getStoreTask,createCommentAttachment,
+                getCommentAttachment,getCommentAttachmentByID
+            }

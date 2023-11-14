@@ -13,12 +13,23 @@ router.put('/:id',taskController.updateTask);
 router.delete('/:id',taskController.deleteTask);
 
 
+
+//
+
+router.post('/:id/comment/:commentID/attachment',taskController.createCommentAttachment);
+router.get('/:id/comment/:commentID/attachment',taskController.getCommentAttachment);
+router.get('/:id/comment/:commentID/attachment/:attachmentID',taskController.getCommentAttachmentByID);
+
+
+
+
+
+
 router.post('/:id/comment',taskController.createComment);
 router.get('/:id/comment',taskController.getComment);
 router.get('/:id/comment/:commentID',taskController.getCommentByID);
 router.put('/:id/comment/:commentID',taskController.updateComment);
 router.delete('/:id/comment/:commentID',taskController.deleteComment);
-
 //front end handle attachment file
 
 router.post('/:id/attachment',taskController.createAttachment);

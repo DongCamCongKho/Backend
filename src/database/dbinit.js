@@ -123,6 +123,29 @@ const attachment = `
 
         `;
 
+
+const commentAttachment = `
+
+        CREATE TABLE IF NOT EXISTS commentAttachment (
+
+            ID INT AUTO_INCREMENT PRIMARY KEY,
+
+            name VARCHAR(255) NOT NULL,
+
+            path VARCHAR(255) NOT NULL,
+
+            type VARCHAR(255) NOT NULL,
+
+            size INT NOT NULL,
+
+            createdAt DATETIME,
+
+            commentID INT references comment(ID)
+
+        );
+
+        `;
+
 function run() {
 
     db.query(createRole, (err, result) => {
@@ -162,6 +185,10 @@ function run() {
     db.query(attachment, (err, result) => { 
         if(err) throw err;
         console.log("Attachment table created.");
+    });
+    db.query(commentAttachment, (err, result) => { 
+        if(err) throw err;
+        console.log("Comment Attachment table created.");
     });
 
 
