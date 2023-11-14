@@ -75,6 +75,9 @@ const updateUser = (req,res)=>{
     // update casi gif? 
     const id = req.params.id;
     const {password, name,email,birthday,role} = req.body
+    
+    if (password)
+    {
     const { hashedPw, salt } = hashPassword(password);
     db.query("UPDATE user SET hashedPassword = ?, salt = ?, name = ?, email = ?, birthday = ?, role = ? WHERE ID = ?",[hashedPw,salt,name,email,birthday,role,id],(err,result)=>{
         if(err) 
@@ -84,6 +87,19 @@ const updateUser = (req,res)=>{
         }
         res.status(200).send("updateUser")
     })
+    }
+    else 
+    {
+        db.query("UPDATE user SET name = ?, email = ?, birthday = ?, role = ? WHERE ID = ?",[name,email,birthday,role,id],(err,result)=>{
+            if(err) 
+            { 
+              //res.status(400).send("Update user failed");
+              throw err;
+            }
+            res.status(200).send("updateUser")
+        })
+    
+    }
 }
 const deleteUser = (req,res)=>{
     const {id} = req.params;
