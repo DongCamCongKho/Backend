@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const taskController = require('../controllers/task.controller');
-const  validateToken  = require('../middlewares/auth.middleware');
-
 
 router.post('/',taskController.createTask);
 router.get('/myTask',taskController.getMyTask);
 router.get('/',taskController.getTask);
 router.get('/:id',taskController.getTaskByID);
+
 router.put('/:id',taskController.updateTask);
 router.delete('/:id',taskController.deleteTask);
 
@@ -23,7 +22,6 @@ router.delete('/:id/comment/:commentID',taskController.deleteComment);
 router.post('/:id/attachment',taskController.createAttachment);
 router.get('/:id/attachment',taskController.getAttachment);
 router.get('/:id/attachment/:attachmentID',taskController.getAttachmentByID);
-
 
 
 module.exports = router;

@@ -35,26 +35,26 @@ const getMyTask = async (req, res) => {
     {}
 }
 
-const getTask = async (req, res) => {
-    try {
+// const getTask = async (req, res) => {
+//     try {
 
-    const result  = await new Promise((resolve,reject) =>{ 
-                db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username ", (err, results) => {
-                if (err) return reject(err)
-                resolve(results);
+//     const result  = await new Promise((resolve,reject) =>{ 
+//                 db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username ", (err, results) => {
+//                 if (err) return reject(err)
+//                 resolve(results);
                 
-            })
-    })
+//             })
+//     })
     
-    res.status(200).json(result);
-    }
-    catch(err)
-    {
-        throw err;
-    }
+//     res.status(200).json(result);
+//     }
+//     catch(err)
+//     {
+//         throw err;
+//     }
     
 
-}
+// }
 const getTaskByID = (req, res) => {
     const { id } = req.params;
     db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username  WHERE task.id = ?", id, (err, result) => {
@@ -181,7 +181,45 @@ const getAttachmentByID = (req,res)=>{
         res.status(200).send(result)
     })
 }
+const getTask = (req,res)=>{
+    const page = parseInt(req.query.page, 10) || 1;
+    const pageSize = parseInt(req.query.pageSize, 10) || 10;
+    pagTask(page,pageSize).then((result)=>{
+        res.status(200).send(result);
+    }).catch((err)=>{
+        throw err;
+    })
 
+}
+function  pagTask(page, pageSize) {
+
+    return new Promise((resolve, reject) => {
+  
+      // calculate offset
+  
+      const offset = (page - 1) * pageSize;
+  
+      // construct the query with limit and offset
+  
+      const query = "SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username  LIMIT ? OFFSET ?";
+  
+  
+  
+      db.query(query, [parseInt(pageSize, 10), offset], (err, results) => {
+  
+        if (err) {
+  
+          return reject(err);
+  
+        }
+  
+        return resolve(results);
+  
+      });
+  
+    });
+  
+  }
 
 module.exports = {createTask, getTask, getTaskByID, updateTask,
                  deleteTask, createComment, getComment,

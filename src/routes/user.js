@@ -5,6 +5,7 @@ const router = express.Router();
 
 
 router.post('/',authMiddleware.registerValidate ,controller.createUser);
+
 router.get('/',controller.getUser);
 router.get('/:id',controller.getUserByID);
 router.put('/:id',controller.updateUser);

@@ -18,12 +18,51 @@ const createUser = (req,res)=>{
         res.status(200).send("Create user successfully")
     })
 }
+// const getUser = (req,res)=>{
+//     db.query("SELECT * FROM user",(err,result)=>{
+//         if(err) throw err;
+//         res.status(200).send(result)
+//     })
+// }
 const getUser = (req,res)=>{
-    db.query("SELECT * FROM user",(err,result)=>{
-        if(err) throw err;
-        res.status(200).send(result)
+    const page = parseInt(req.query.page, 10) || 1;
+    const pageSize = parseInt(req.query.pageSize, 10) || 10;
+    pagUser(page,pageSize).then((result)=>{
+        res.status(200).send(result);
+    }).catch((err)=>{
+        throw err;
     })
+
 }
+function  pagUser(page, pageSize) {
+
+    return new Promise((resolve, reject) => {
+  
+      // calculate offset
+  
+      const offset = (page - 1) * pageSize;
+  
+      // construct the query with limit and offset
+  
+      const query = "SELECT * FROM user LIMIT ? OFFSET ?";
+  
+  
+  
+      db.query(query, [parseInt(pageSize, 10), offset], (err, results) => {
+  
+        if (err) {
+  
+          return reject(err);
+  
+        }
+  
+        return resolve(results);
+  
+      });
+  
+    });
+  
+  }
 const getUserByID =(req,res)=>{
     const {id} = req.params;
     db.query("SELECT * FROM user WHERE id = ?",id,(err,result)=>{
