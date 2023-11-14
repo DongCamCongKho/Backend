@@ -165,8 +165,9 @@ const deleteComment = (req, res) => {
 }
 const getStoreTask = async (req,res)=>{
     try{
+        const username = getUserNameFromToken(req);
         const result = await new Promise((resolve,reject) =>{ 
-            db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username WHERE status='store'", (err, results) => {
+            db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username WHERE status='store' AND postedBy=?",[username], (err, results) => {
             if (err) return reject(err)
             resolve(results);
             
