@@ -16,9 +16,9 @@ router.delete('/:id',taskController.deleteTask);
 
 //
 
-router.post('/:id/comment/:commentID/attachment',taskController.createCommentAttachment);
-router.get('/:id/comment/:commentID/attachment',taskController.getCommentAttachment);
-router.get('/:id/comment/:commentID/attachment/:attachmentID',taskController.getCommentAttachmentByID);
+router.post('/comment/:commentID/attachment',taskController.createCommentAttachment);
+router.get('/comment/:commentID/attachment',taskController.getCommentAttachment);
+router.get('/comment/:commentID/attachment/:attachmentID',taskController.getCommentAttachmentByID);
 
 
 
