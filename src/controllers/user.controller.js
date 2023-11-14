@@ -18,12 +18,19 @@ const createUser = (req,res)=>{
         res.status(200).send("Create user successfully")
     })
 }
-const getTotalRecord = (req,res)=>{
-    db.query("SELECT COUNT(*) as totalRecord FROM user",(err,result)=>{
-        if(err) throw err;
-        res.status(200).send(result)
-    })
+const getTotalRecord = async ()=>{
+    try{
 
+    result = await new Promise ((resolve,reject)=>
+    {
+        db.query("SELECT COUNT(*) as totalRecord FROM user",(err,result)=>{
+        if (err) return reject(err)
+        resolve(result)
+    })})
+    return result[0].totalRecord;
+    }
+    catch(err) 
+    {}
 }
 // const getUser = (req,res)=>{
 //     db.query("SELECT * FROM user",(err,result)=>{
@@ -31,14 +38,22 @@ const getTotalRecord = (req,res)=>{
 //         res.status(200).send(result)
 //     })
 // }
-const getUser = (req,res)=>{
+const getUser = async (req,res)=>{
     const page = parseInt(req.query.page, 10) || 1;
     const pageSize = parseInt(req.query.pageSize, 10) || 10;
-    pagUser(page,pageSize).then((result)=>{
-        res.status(200).send(result);
+    const result = await pagUser(page,pageSize).then((result)=>{
+        return result;
     }).catch((err)=>{
         throw err;
     })
+    const totalRecord = await getTotalRecord().then((result)=>{
+        return result;
+    }
+    ).catch((err)=>{
+        throw err;
+    })
+
+    res.status(200).send({result,totalRecord})
 
 }
 function  pagUser(page, pageSize) {

@@ -1,3 +1,4 @@
+const { get } = require("http");
 const db = require("../database/connection")
 const {getUserNameFromToken, getRoleFromToken} = require("../services/token")
 
@@ -17,11 +18,19 @@ const createTask = (req, res) => {
         res.status(200).json(task);
     })
 } 
-const getTotalRecord = (req,res)=>{
-    db.query("SELECT COUNT(*) as totalRecord FROM task",(err,result)=>{
-        if(err) throw err;
-        res.status(200).send(result)
-    })
+const getTotalRecord = async ()=>{
+    try{
+
+    result = await new Promise ((resolve,reject)=>
+    {
+        db.query("SELECT COUNT(*) as totalRecord FROM task",(err,result)=>{
+        if (err) return reject(err)
+        resolve(result)
+    })})
+    return result[0].totalRecord;
+    }
+    catch(err) 
+    {}
 }
 const getMyTask = async (req, res) => {
 
@@ -202,14 +211,22 @@ const getAttachmentByID = (req,res)=>{
         res.status(200).send(result)
     })
 }
-const getTask = (req,res)=>{
+const getTask = async (req,res)=>{
+    try {
     const page = parseInt(req.query.page, 10) || 1;
     const pageSize = parseInt(req.query.pageSize, 10) || 10;
-    pagTask(page,pageSize).then((result)=>{
-        res.status(200).send(result);
+        
+    const result = await  pagTask(page,pageSize).then((result)=>{
+        return result;
     }).catch((err)=>{
         throw err;
     })
+
+    const totalRecord = await getTotalRecord();
+    res.status(200).json({result,totalRecord});
+    }
+    catch(err)
+    {}
 
 }
 const createCommentAttachment = (req,res)=>{
@@ -242,7 +259,7 @@ const getCommentAttachmentByID = (req,res)=>{
     )
 }
 
-function  pagTask(page, pageSize) {
+async function  pagTask(page, pageSize) {
 
     return new Promise((resolve, reject) => {
   
