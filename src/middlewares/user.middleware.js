@@ -5,7 +5,6 @@ function registerValidate(req,res,next)
     const {name,age,email,password } = req.body;
     const regexName = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]+$/;
     const regexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     let errors = [];
     if(!name  || !email || !password)
     {
@@ -19,10 +18,6 @@ function registerValidate(req,res,next)
     if(email && !regexEmail.test(email))
     {
         errors.push("Email is not valid")
-    }
-    if(password && !regexPassword.test(password))
-    {
-        errors.push("Password is not valid")
     }
     if(errors.length > 0)
     {
