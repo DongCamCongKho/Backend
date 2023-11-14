@@ -18,6 +18,13 @@ const createUser = (req,res)=>{
         res.status(200).send("Create user successfully")
     })
 }
+const getTotalRecord = (req,res)=>{
+    db.query("SELECT COUNT(*) as totalRecord FROM user",(err,result)=>{
+        if(err) throw err;
+        res.status(200).send(result)
+    })
+
+}
 // const getUser = (req,res)=>{
 //     db.query("SELECT * FROM user",(err,result)=>{
 //         if(err) throw err;
@@ -109,7 +116,7 @@ const deleteUser = (req,res)=>{
     })
 }
 
-module.exports = {createUser,getUser,getUserByID,updateUser,deleteUser} 
+module.exports = {createUser,getUser,getUserByID,updateUser,deleteUser,getTotalRecord} 
 
 
 // createUser = (req,res)=>{

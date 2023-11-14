@@ -16,6 +16,12 @@ const createTask = (req, res) => {
         task.ID  = result.insertId;
         res.status(200).json(task);
     })
+} 
+const getTotalRecord = (req,res)=>{
+    db.query("SELECT COUNT(*) as totalRecord FROM task",(err,result)=>{
+        if(err) throw err;
+        res.status(200).send(result)
+    })
 }
 const getMyTask = async (req, res) => {
 
@@ -270,5 +276,5 @@ module.exports = {createTask, getTask, getTaskByID, updateTask,
                  deleteTask, createComment, getComment,
                 getCommentByID, updateComment, deleteComment,
                 createAttachment,getAttachment,getAttachmentByID,getMyTask,getStoreTask,createCommentAttachment,
-                getCommentAttachment,getCommentAttachmentByID
+                getCommentAttachment,getCommentAttachmentByID,getTotalRecord
             }
