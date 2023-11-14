@@ -4,7 +4,7 @@ const taskController = require('../controllers/task.controller');
 const  validateToken  = require('../middlewares/auth.middleware');
 
 
-router.post('/',validateToken,taskController.createTask);
+router.post('/',taskController.createTask);
 router.get('/myTask',taskController.getMyTask);
 router.get('/',taskController.getTask);
 router.get('/:id',taskController.getTaskByID);

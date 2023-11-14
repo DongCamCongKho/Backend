@@ -15,8 +15,8 @@ const fileUpload = require('express-fileupload');
 const updatedContentDisposition = 'inline';
 var AWS = require('aws-sdk');
 authRouter.use(fileUpload());
-authRouter.post('/upload', validateToken, async (req, res) => {
-
+authRouter.post('/upload',validateToken, async (req, res) => {
+    console.log(req.headers)
     AWS.config.update({
         accessKeyId: process.env.ACCESS_KEY_ID,
         secretAccessKey: process.env.SECRET_ACCESS_KEY,
