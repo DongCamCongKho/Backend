@@ -22,7 +22,7 @@ const getMyTask = async (req, res) => {
     try{
         const username = getUserNameFromToken(req);
         const result = await new Promise((resolve,reject) =>{ 
-            db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username WHERE task.postedBy = ?", username, (err, results) => {
+            db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username WHERE task.postedBy = ? AND status!='store'", username, (err, results) => {
             if (err) return reject(err)
             resolve(results);
             
@@ -66,13 +66,12 @@ const getTaskByID = (req, res) => {
 const updateTask = (req, res) => {
     // update casi gif? 
     const {status} = req.body;
-    const updateAt = new Date();
+    const updatedAt = new Date();
     const {id} = req.params;
-    db.query("UPDATE task SET status = ?, updateAt = ? WHERE id = ?",[status,updateAt,id],(err,result)=>{
+    db.query("UPDATE task SET status = ?, updatedAt = ? WHERE id = ?",[status,updatedAt,id],(err,result)=>{
         if(err) throw err;
-        res.status(200).send("update task successfully")
     })
-    res.status(200).send("updateTask")
+    res.status(200).send("updated Task "+ status)
 }
 const deleteTask = (req, res) => {
     const { id } = req.params;
@@ -149,6 +148,22 @@ const deleteComment = (req, res) => {
         res.status(200).send("Delete comment successfully")
     })
 }
+const getStoreTask = async (req,res)=>{
+    try{
+        const result = await new Promise((resolve,reject) =>{ 
+            db.query("SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username WHERE status='store'", (err, results) => {
+            if (err) return reject(err)
+            resolve(results);
+            
+        })
+    })
+        res.status(200).json(result);
+
+    }
+    catch(err)
+    {}
+
+}
 
 
 
@@ -201,7 +216,7 @@ function  pagTask(page, pageSize) {
   
       // construct the query with limit and offset
   
-      const query = "SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username  LIMIT ? OFFSET ?";
+      const query = "SELECT task.*,user.name as name, user.ID as userID, CONCAT('/avts/', MOD(user.ID, 20), '.png') as profilePicture FROM task INNER JOIN user ON task.postedBy = user.username WHERE status!='store'  LIMIT ? OFFSET ?";
   
   
   
@@ -224,4 +239,4 @@ function  pagTask(page, pageSize) {
 module.exports = {createTask, getTask, getTaskByID, updateTask,
                  deleteTask, createComment, getComment,
                 getCommentByID, updateComment, deleteComment,
-                createAttachment,getAttachment,getAttachmentByID,getMyTask}
+                createAttachment,getAttachment,getAttachmentByID,getMyTask,getStoreTask}

@@ -69,7 +69,7 @@ const taskInit = `
 
             description TEXT,
 
-            status ENUM('doing','done'),
+            status ENUM('doing','done','store'),
 
             createdAt DATETIME,
 
