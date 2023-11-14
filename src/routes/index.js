@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { validateToken } = require('../services/token');
+const validateToken  = require('../middlewares/auth.middleware');
 
 router.use('/user', require('./user'));
 router.use('/task',validateToken, require('./task'));
@@ -9,4 +9,4 @@ router.use('/auth', require('./auth'));
 
 router.use('/test',require('./test'));
 
-module.exports = router;
+module.exports = router; 
